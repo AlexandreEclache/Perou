@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<meta name="color-scheme" content="light dark">
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apagnan</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #yesBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #yesBtn:hover {
+            background-color: #45a049;
+        }
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+        }
+        #noBtn:hover {
+            background-color: #da190b;
+        }
+        
+        /* Styles pour la page des photos */
+        .gallery-page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+        
+        .gallery-page.active {
+            display: block;
+        }
+        
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .gallery-title {
+            color: white;
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+
+    align-items: start;   /* <-- C'EST ÇA QUI MANQUE */
+}
+
+        
+        .photo-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height:auto;
+        }
+
+        .photo-item img {
+         width: 100%;
+         height: auto;
+         object-fit: contain;
+         background-color: #f5f5f5;
+         display:block;
+        }       
+        
+        .photo-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .photo-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #e0e0e0;
+            display: block;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+            font-weight: bold;
+        }
+        
+     .photo-caption {
+    padding: 15px;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+
+    flex: 0 0 60px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+
+
+
+
+        /* Styles pour la page d'alerte */
+.alert-page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 20px;
+    flex-items: center;
+    justify-content: center;
+}
+
+.alert-page.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-container {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 600px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.alert-warning {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.alert-warning h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.alert-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.alert-image {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.continue-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.continue-btn:hover {
+    background-color: #45a049;
+}
+
+        /* Styles pour la page des questions */
+        .questions-page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .questions-page.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .questions-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .question-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .choices-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .choice-item {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .choice-item:hover {
+            transform: scale(1.05);
+        }
+
+        .choice-image {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .choice-image.shake-error {
+            animation: shake 0.5s;
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+
+        .choice-image.success-green {
+            animation: successGlow 0.5s;
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+
+        @keyframes successGlow {
+            0% { background-color: rgba(76, 175, 80, 0); }
+            50% { background-color: rgba(76, 175, 80, 0.3); }
+            100% { background-color: rgba(76, 175, 80, 0.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .final-page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    background: url("images/TA_PHOTO.jpg") center/cover no-repeat;
+    position: relative;
+}
+
+.final-page.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.final-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    border-radius: 15px;
+}
+
+.final-overlay h1 {
+    color: white;
+    font-size: 36px;
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+    <div class="container" id="questionContainer">
+        <h1>Veux-tu être ma quoicou amoureuse?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Oui bien sûr</button>
+            <button id="noBtn">Non</button>
+        </div>
+    </div>
+
+<!-- Ajoute cette nouvelle section après la div.container et avant la div.gallery-page -->
+<div class="alert-page" id="alertPage">
+    <div class="alert-container">
+        <div class="alert-warning">
+            <h2>⚠️ ALERTE : Avertissement vocal avant de continuer ⚠️</h2>
+        </div>
+        <div class="alert-content">
+            <img src="images/Alerte.JPG" alt="Avertissement" class="alert-image">
+            <audio controls style="width: 100%; margin: 20px 0;">
+                <source src="assets/alerte.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+            <button id="continueBtn" class="continue-btn">Vzy on continue</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Page des questions -->
+    <div class="questions-page" id="questionsPage">
+        <div class="questions-container">
+            <h1 class="question-title" id="questionText"></h1>
+            <div class="choices-container" id="choicesContainer"></div>
+        </div>
+    </div>
+
+    <div class="gallery-page" id="galleryPage">
+        <div class="gallery-container">
+            <h1 class="gallery-title">✨ Neuillesque de A à Z ✨</h1>
+            <div class="photos-grid" id="photosGrid"></div>
+            <div id="pagination" style="margin-top:40px; text-align:center;"></div>
+        </div>
+    </div>
+
+    <div class="final-page" id="finalPage">
+    <div class="final-overlay">
+        <h1>Je t'aime ❤️ <br> à dans 4 mois :)</h1>
+    </div>
+</div>
+
+    <script>
+       const noMessages = [
+    "J'ai dit non",
+    "Toujours pas",
+    "Non c'est non ! #RespoHeForShe",
+    "C'est long",
+    "C'est long",
+    "C'est beaucoup trop long",
+    "Et si ça continue",
+    "Il va y avoir du chahut",
+    "Sah tu me brises le corazon",
+    "Allez clique sur oui",
+    "Stppppp",
+    "Pitié ohhhhh Zoz"
+];
+
+let clickCount = 0;
+let yesBtnSize = 1;
+let lastMessageReached = false;
+
+document.getElementById("noBtn").addEventListener("click", function() {
+    if (clickCount < noMessages.length) {
+        this.textContent = noMessages[clickCount];
+        clickCount++;
+        if (clickCount === noMessages.length) {
+            lastMessageReached = true;
+        }
+    }
+    
+    yesBtnSize += 0.2;
+    
+    if (lastMessageReached) {
+        // Après "Pitié oh Zoz", juste grossir sans décaler
+        document.getElementById("yesBtn").style.transform = `scale(${yesBtnSize})`;
+    } else {
+        // Avant, décaler à gauche proportionnellement à la croissance
+        const translateX = -(yesBtnSize - 1) * 25;
+        document.getElementById("yesBtn").style.transform = `scale(${yesBtnSize}) translateX(${translateX}px)`;
+    }
+});
+
+document.getElementById("yesBtn").addEventListener("click", function() {
+    // Masquer la page des questions et afficher la page d'alerte
+    document.getElementById("questionContainer").style.display = "none";
+    document.getElementById("alertPage").classList.add("active");
+});
+
+document.getElementById("continueBtn").addEventListener("click", function() {
+    // Masquer la page d'alerte et afficher la page des questions
+    document.getElementById("alertPage").classList.remove("active");
+    document.getElementById("questionsPage").classList.add("active");
+    loadQuestion(0);
+});
+
+// Données des questions
+const questions = [
+    {
+        text: "Qui va être le plus triste quand tu vas partir au Pérou ?",
+        leftImage: "images/Zoz.png",
+        rightImage: "images/Alex.png",
+        correctAnswer: "left"
+    },
+    // Ajoute d'autres questions ici si nécessaire
+];
+
+let currentQuestionIndex = 0;
+let currentGalleryPage = 1;
+const itemsPerPage = 20;
+
+
+function loadQuestion(index) {
+    if (index >= questions.length) {
+        // Passer à la galerie quand toutes les questions sont répondues
+        document.getElementById("questionsPage").classList.remove("active");
+        document.getElementById("galleryPage").classList.add("active");
+        generateGallery(1);
+        return;
+    }
+
+    currentQuestionIndex = index;
+    const question = questions[index];
+    
+    // Mettre à jour le titre de la question
+    document.getElementById("questionText").textContent = question.text;
+    
+    // Créer les choix (images)
+    const choicesContainer = document.getElementById("choicesContainer");
+    choicesContainer.innerHTML = "";
+    
+    // Image de gauche
+    const leftChoice = document.createElement("div");
+    leftChoice.className = "choice-item";
+    const leftImg = document.createElement("img");
+    leftImg.src = question.leftImage;
+    leftImg.className = "choice-image";
+    leftImg.addEventListener("click", function() {
+        handleChoice("left", question.correctAnswer, leftImg);
+    });
+    leftChoice.appendChild(leftImg);
+    choicesContainer.appendChild(leftChoice);
+    
+    // Image de droite
+    const rightChoice = document.createElement("div");
+    rightChoice.className = "choice-item";
+    const rightImg = document.createElement("img");
+    rightImg.src = question.rightImage;
+    rightImg.className = "choice-image";
+    rightImg.addEventListener("click", function() {
+        handleChoice("right", question.correctAnswer, rightImg);
+    });
+    rightChoice.appendChild(rightImg);
+    choicesContainer.appendChild(rightChoice);
+}
+
+function handleChoice(chosenAnswer, correctAnswer, imageElement) {
+    if (chosenAnswer === correctAnswer) {
+        // Bonne réponse: animer en vert puis passer à la question suivante
+        imageElement.classList.add("success-green");
+        currentQuestionIndex++;
+        setTimeout(() => {
+            imageElement.classList.remove("success-green");
+            loadQuestion(currentQuestionIndex);
+        }, 500);
+    } else {
+        // Mauvaise réponse: animer l'image avec shake et teinte rouge
+        imageElement.classList.add("shake-error");
+        setTimeout(() => {
+            imageElement.classList.remove("shake-error");
+        }, 500);
+    }
+}
+
+const photos = [
+    { url: "images/BAT.png", caption: "commençons par le commencement" },
+        { url: "images/snap0.JPG", caption: "et nos snaps pour la suite" },
+        { url: "images/autruche.MP4", caption: "que le filtre il voulait me faire" },
+        { url: "images/tigre.MP4", caption: "🐅" },
+        { url: "images/snap4.JPG", caption: "..." },
+        { url: "images/snap5.JPG", caption: "bwwwahhhhhh (pov le seul emote qu'on a débloqué)" },
+        { url: "images/puff.MP4", caption: "ça peut m'avoir la grosse gitane sous puff dans mon lit" },
+        { url: "images/snap6.JPG", caption: "chacun ..." },
+        { url: "images/snap7.JPG", caption: "... son chacun (à médichier, jsp quel message j'ai voulu faire passer)" },
+        { url: "images/futureZ.MP4", caption: "bh voilà tu commences par el Peru" },
+        { url: "images/snap8.JPG", caption: "pov : moi le 13 mars dans mon lit" },
+        { url: "images/snap11.JPG", caption: "jsp ce que j'essayais de faire honnête" },
+        { url: "images/snap12.JPG", caption: "y'a pas que moi qui kiffe les lunettes apparemment ✊🔫🕶️ " },
+        { url: "images/discret.MP4", caption: "on en apprend des choses pdt les partiels" },
+        { url: "images/chant-disney.MP4", caption: "fin on a appris mais on s'est bien BR aussi mdr" },
+        { url: "images/clara.png", caption: "en vrai elle était vrmt cool je suis trop content de l'avoir rencontrée" },
+        { url: "images/fléchettes.png", caption: "''it's okay''" },
+        { url: "images/bisous.MP4", caption: "le son de chloé feat le makeup de Zoé" },
+        { url: "images/snap13.JPG", caption: "honnête j'ai plus d'inspi mais t'as raison d'avoir peur de moi" },
+        { url: "images/snap2.JPG", caption: "neuils" },        
+        { url: "images/wantZ.MP4", caption: "GG" },
+        { url: "images/snap3.JPG", caption: "des shaylas d'exception finalement" },
+        { url: "images/wantA.MP4", caption: "regarde moi bien si on aura pas un chat en septembre" },
+        { url: "images/problemZ.MP4", caption: "tu vois c'est ça ton pb" },
+        { url: "images/sourire.JPG", caption: '<a href="https://www.instagram.com/reels/DPt42u3iFKq/" target="_blank">Gamberge' },
+        { url: "images/friendA.MP4", caption: '<a href="https://www.instagram.com/reel/DQjjizXiIzU/" target="_blank">pov : chaque matin quand je dois aller en cours alors que jʼai un koala qui sʼaccroche à moi (clique, je suis tombé dessus pile quand je codais ça)</a>' },
+        { url: "images/friendZ.MP4", caption: "blanc ou noir, soit nuit blanche, soit 21h de sommeil d'affilée" },
+        { url: "images/casquette.JPG", caption: "dans le bendo" }, 
+        { url: "images/problemA.MP4", caption: "''keske jsuis bg moi, mais, mais qu'ai-je fait pour être si bggggggg ?''" },
+        { url: "images/snap10.JPG", caption: "on est tous le Grinch de qlqn d'autre" },
+        { url: "images/cookieA.MP4", caption: "jsp si c'est bon signe d'être ce type de cookie but I guess je vivrai avec" },
+        { url: "images/snap1.JPG", caption: "le clochard de la gare" }, 
+        { url: "images/cookieZ.MP4", caption: "wola j'ai tjrs su que ti étais ma fortune (abbatez le à dire des trucs comme ça)" },
+        { url: "images/danse-ecrevisse.MP4", caption: "à ce moment là, j'ai su (crédits : Jul)" },
+        { url: "images/lunettes.png", caption: "ok John Lennon" },
+        { url: "images/painZ.MP4", caption: "un pain finalement" },
+        { url: "images/painA.MP4", caption: "oui oui baguette" },
+        { url: "images/snap9.JPG", caption: "''moufette''" },
+        { url: "images/shapka.jpeg", caption: '<a href="https://www.instagram.com/reels/DUZ6IIviDfO/" target="_blank">euh ça sʼécrit shapka ? (jʼavais plus de photos avec toi donc je mets ça)' },
+        { url: "images/predictionZ.MP4", caption: "un haussement de sourcils et une perte de sourire aberrants mais je passe" },
+        { url: "images/predictionA.MP4", caption: "avec les ATD 😻" },
+        { url: "images/bwahhh.MP4", caption: '<a href="https://www.instagram.com/reels/DRMf92miEMJ/" target="_blank">pov : nous en résumé (je tombe dessus pile quand je code cʼest une singerie [pls trouve pas ça cringe cʼest vla drôle])</a>' },
+        { url: "images/voiture.HEIC", caption: "encore bwahhhh" },
+        { url: "images/langue.JPG", caption: '<a href="https://www.instagram.com/reels/DPENkOHjD1U/" target="_blank">honnête il me faut juste ça maintenant tout de suite' },
+        { url: "images/hein.HEIC", caption: "Pov : ta tête depuis que t'as ouvert ce site" },
+        { url: "images/frontZ.JPG", caption: '<a href="https://www.instagram.com/reels/DU-XRI8jGRl/" target="_blank">glamour <br>(jʼen profite pour mettre des réels gênants) </a>' },
+        { url: "images/bebe.JPG", caption: "cringe ou canard d'or jsp encore" },
+        { url: "images/futureA.MP4", caption: "ouais ouais bien vu le bingo de la salle des fêtes de Charron <br>(marche aussi avec le loto des patineuils)" },
+        { url: "images/lunettes.MP4", caption: "si ''dans le bon'' était une vidéo" },
+        { url:" images/ageA.MP4 ",caption:"4 ans et 10 jours pour faire un max de conneries encore"},
+        { url: "images/ageZ.MP4", caption: "mais enft c'est impossible pcq on va se marier ensemble 🥸" },
+        { url: "images/folle-du-bus.MP4", caption: "🤣🤣🤣🤣🤣🤣 (comment ne pas finir par ça ?)" },
+        {special: true, caption: "clique pour ouvrir mon dernier message 🥸" },
+];
+
+function generateGallery(page = 1) {
+    const photosGrid = document.getElementById("photosGrid");
+    photosGrid.innerHTML = "";
+
+    currentGalleryPage = page;
+
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const photosToDisplay = photos.slice(start, end);
+
+   photosToDisplay.forEach((photo) => {
+    const photoItem = document.createElement("div");
+    photoItem.className = "photo-item";
+
+    if (photo.special) {
+        photoItem.style.background = "#FFD700";
+        photoItem.style.display = "flex";
+        photoItem.style.alignItems = "center";
+        photoItem.style.justifyContent = "center";
+        photoItem.style.cursor = "pointer";
+        photoItem.style.fontWeight = "bold";
+        photoItem.style.fontSize = "18px";
+        photoItem.style.textAlign = "center";
+        photoItem.style.padding = "20px";
+
+        photoItem.innerHTML = photo.caption;
+
+        photoItem.addEventListener("click", () => {
+            document.getElementById("galleryPage").classList.remove("active");
+            document.getElementById("finalPage").classList.add("active");
+        });
+
+    } else if (photo.url.toLowerCase().endsWith(".mp4")) {
+        photoItem.innerHTML = `
+            <video controls preload="none" style="width:100%;">
+                <source src="${photo.url}" type="video/mp4">
+            </video>
+            <div class="photo-caption">${photo.caption}</div>
+        `;
+    } else {
+        photoItem.innerHTML = `
+            <img src="${photo.url}" loading="lazy">
+            <div class="photo-caption">${photo.caption}</div>
+        `;
+    }
+
+    photosGrid.appendChild(photoItem);
+});
+
+generatePagination();
+}
+
+
+function generatePagination() {
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    const totalPages = Math.ceil(photos.length / itemsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.style.margin = "5px";
+        btn.style.padding = "8px 15px";
+
+        if (i === currentGalleryPage) {
+            btn.style.backgroundColor = "#4CAF50";
+            btn.style.color = "white";
+        }
+
+        btn.addEventListener("click", () => generateGallery(i));
+        pagination.appendChild(btn);
+    }
+}
+
+    </script>
+</body>
+</html>
